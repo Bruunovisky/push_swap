@@ -3,6 +3,7 @@ NAME 		=	push_swap
 # NAME_BONUS	= 	push_swap_bonus
 
 SRC = 			./src/main.c \
+	  			./src/sort.c \
 	  			./src/stack_build.c \
 				./src/stack_operations.c
 

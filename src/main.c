@@ -37,5 +37,6 @@ int main(int argc, char **argv)
 	if (argc == 2)
     	return (EXIT_SUCCESS);
 	creat_stack(main, argc, argv, NULL);
+	sort(main);
     return (EXIT_SUCCESS);
 }

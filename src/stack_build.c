@@ -36,12 +36,12 @@ void    iter_nodes(t_main *main, int value)
     {
         while (tmp_top->value != value && tmp_end->value != value)
         {
-            if (tmp_top->down == tmp_end || tmp_top->up == tmp_top)
+            if (tmp_top->down == tmp_end || tmp_end->up == tmp_top)
                 return (new_node(main, value));
             if (tmp_top == tmp_end)
                 return (new_node(main, value));
             tmp_top = tmp_top->down;
-            tmp_end = tmp_top->up;
+            tmp_end = tmp_end->up;
         }
     }
     error_free_exit(main);
