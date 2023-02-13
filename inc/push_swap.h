@@ -21,12 +21,18 @@ typedef struct s_main
     t_stack *stack_a_end;
     t_stack *stack_b_top;
     t_stack *stack_b_end;
-    int     stack_half_a;
-    int     stack_half_b;
+    int     list_len;
+    int     mid;
+    int     operations;
+    int     range;
+    int     rr;
+    int     set;
+    int     stack_len;
     int     value_max;
     int     value_min;
-    int     stack_top_size;
-    int     stack_end_size;
+    long    top;
+    long    end;
+    long    *list;
 }   t_main;
 
 void	*ft_calloc(size_t nmemb, size_t size);
@@ -41,10 +47,11 @@ void    push_b(t_main *main);
 
 void    sort(t_main *main);
 
-void    swap(t_main *main, char *sa_sb_ss);
+void    swap(t_main *main, t_stack **top, t_stack **end, char *sa_sb_ss);
 
-void    reverse_rotate(t_main *main, char *rra_rrb_rrr);
+void    reverse_rotate(t_main *main, t_stack **top, t_stack **end, \
+char *rra_rrb_rrr);
 
-void    rotate(t_main *main, char *ra_rb_rr);
+void    rotate(t_main *main, t_stack **top, t_stack **end, char *ra_rb_rr);
 
 #endif

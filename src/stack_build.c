@@ -49,13 +49,11 @@ void    iter_nodes(t_main *main, int value)
 
 void	creat_stack(t_main *main, int argc, char **argv, int *i)
 {
-    long value;
     int sign;
 
     i = (int *)ft_calloc(2, sizeof(int));
 	while (++i[0] < argc)
 	{
-        value = 0;
         sign = 1;
 		while (argv[i[0]][i[1]])
 		{
@@ -65,13 +63,15 @@ void	creat_stack(t_main *main, int argc, char **argv, int *i)
                 sign = -sign;
             else
             {
-                value += (argv[i[0]][i[1]++] - 48) * sign;
-                value += (argv[i[0]][i[1]] != '\0') * (value * 9);
+                main->list[i[0] - 1] += (argv[i[0]][i[1]] - 48) * sign;
+                main->list[i[0] - 1] += (argv[i[0]][i[1] + 1] != '\0') * \
+                (main->list[i[0] - 1] * 9);
+                ++i[1];
             }
 		}
-        if (value > INT_MAX || value < INT_MIN)
+        if (main->list[i[0] - 1] > INT_MAX || main->list[i[0] - 1] < INT_MIN)
             error_free_exit(main);
-        iter_nodes(main, value);
+        iter_nodes(main, main->list[i[0] - 1]);
         i[1] = 0;
 	}
 }

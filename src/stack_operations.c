@@ -26,7 +26,8 @@ void    push_a(t_main *main)
         main->stack_a_top->down = NULL;
         main->stack_b_top->up = NULL;
     }
-    write(1, "pa\n", 3); 
+    write(1, "pa\n", 3);
+    ++main->operations; 
 }
 
 void    push_b(t_main *main)
@@ -55,93 +56,85 @@ void    push_b(t_main *main)
         main->stack_b_top->down = NULL;
         main->stack_a_top->up = NULL;
     }
-    write(1, "pb\n", 3); 
+    write(1, "pb\n", 3);
+    ++main->operations; 
 }
 
-void    swap(t_main *main, char *sa_sb_ss)
+void    swap(t_main *main, t_stack **top, t_stack **end, char *sa_sb_ss)
 {
     if (sa_sb_ss[0] == 's' && sa_sb_ss[1] == 's')
     {
-        swap(main, "sa");
-        return (swap(main, "sb"));
-    } 
-    else if (sa_sb_ss[0] == 's' && sa_sb_ss[1] == 'a')
-    {
-        main->stack_a_top->up = main->stack_a_top->down;
-        main->stack_a_top->down = main->stack_a_top->up->down;
-        main->stack_a_top->down->up = main->stack_a_top;
-        main->stack_a_top->up->down = main->stack_a_top;
-        main->stack_a_top = main->stack_a_top->up;
-        main->stack_a_top->up = NULL;
-    }    
-    else if (sa_sb_ss[0] == 's' && sa_sb_ss[1] == 'b')
-    {
-        main->stack_b_top->up = main->stack_b_top->down;
-        main->stack_b_top->down = main->stack_b_top->up->down;
-        main->stack_b_top->down->up = main->stack_b_top->up;
-        main->stack_b_top->up->down = main->stack_b_top;
-        main->stack_b_top = main->stack_b_top->up;
-        main->stack_b_top->up = NULL;
+        ++main->operations;
+        write(1, sa_sb_ss, 2);
+        write(1, "\n", 1);   
+        swap(main, &main->stack_a_top, &main->stack_a_end, "sa");
+        return (swap(main, &main->stack_b_top, &main->stack_b_end, "sb"));
     }
-    write(1, sa_sb_ss, 2);
-    write(1, "\n", 1);   
+    else
+    {
+        write(1, sa_sb_ss, 2);
+        write(1, "\n", 1);
+        ++main->operations;   
+    } 
+    (*top)->up = (*top)->down;
+    if (!(*top)->down->down)
+        *end = *top;
+    if (!(*top)->down->down)
+        (*end)->down = NULL;
+    if ((*top)->down && (*top)->down->down)
+        (*top)->down->down->up = *top;
+    if ((*top)->down && (*top)->down->down)
+        (*top)->down = (*top)->down->down;
+    *top = (*top)->up;
+    (*top)->down = (*top)->up;
+    (*top)->up = NULL;
 }
 
-void    rotate(t_main *main, char *ra_rb_rr)
+void    rotate(t_main *main, t_stack **top, t_stack **end, char *ra_rb_rr)
 {
     if (ra_rb_rr[0] == 'r' && ra_rb_rr[1] == 'r')
     {
-        rotate(main, "ra");
-        return (rotate(main, "rb"));
+        ++main->operations;
+        write(1, ra_rb_rr, 2);
+        write(1, "\n", 1);
+        rotate(main, &main->stack_a_top, &main->stack_a_end, " ");
+        return (rotate(main, &main->stack_b_top, &main->stack_b_end, " "));
     }
-    else if (ra_rb_rr[0] == 'r' && ra_rb_rr[1] == 'a')
+    else if (ra_rb_rr[0] != ' ')
     {
-        main->stack_a_end->down = main->stack_a_top;
-        main->stack_a_top->up = main->stack_a_end;
-        main->stack_a_top = main->stack_a_top->down;
-        main->stack_a_end = main->stack_a_end->down;
-        main->stack_a_end->down = NULL;
-        main->stack_a_top->up = NULL;
+        write(1, ra_rb_rr, 2);
+        write(1, "\n", 1);
+        ++main->operations;
     }
-    else if (ra_rb_rr[0] == 'r' && ra_rb_rr[1] == 'b')
-    {
-        main->stack_b_end->down = main->stack_b_top;
-        main->stack_b_top->up =main->stack_b_end;
-        main->stack_b_top = main->stack_b_top->down;
-        main->stack_b_end =main->stack_b_end->down;
-        main->stack_b_end->down = NULL;
-        main->stack_b_top->up = NULL;
-    }
-    write(1, ra_rb_rr, 2);
-    write(1, "\n", 1);
+    (*end)->down = *top;
+    (*top)->up = *end;
+    *top = (*top)->down;
+    *end = (*end)->down;
+    (*end)->down = NULL;
+    (*top)->up = NULL;
 }
 
-void    reverse_rotate(t_main *main, char *rra_rrb_rrr)
+void    reverse_rotate(t_main *main, t_stack **top, t_stack **end, \
+char *rra_rrb_rrr)
 {
     if (rra_rrb_rrr[0] == 'r' && rra_rrb_rrr[1] == 'r' && rra_rrb_rrr[2] == 'r')
     {
-        rotate(main, "rra");
-        return (rotate(main, "rrb"));
+        ++main->operations;
+        write(1, rra_rrb_rrr, 3);
+        write(1, "\n", 1);
+        rotate(main, &main->stack_a_top, &main->stack_a_end, " ");
+        return (rotate(main, &main->stack_b_top, &main->stack_b_end, " "));
     }
-    else if (rra_rrb_rrr[1] == 'r' && rra_rrb_rrr[2] == 'a')
+    else if (rra_rrb_rrr[0] != ' ')
     {
-        main->stack_a_top->up = main->stack_a_end;
-        main->stack_a_end->down = main->stack_a_top;
-        main->stack_a_end = main->stack_a_end->up;
-        main->stack_a_top = main->stack_a_top->up;
-        main->stack_a_end->down = NULL;
-        main->stack_a_top->up = NULL;
-    write(1, "\n", 1);
+        write(1, rra_rrb_rrr, 3);
+        write(1, "\n", 1);
+        ++main->operations;
     }
-    else if (rra_rrb_rrr[1] == 'r' && rra_rrb_rrr[2] == 'b')
-    {
-        main->stack_b_top->up = main->stack_b_end;
-        main->stack_b_end->down = main->stack_b_top;
-        main->stack_b_end = main->stack_b_end->up;
-        main->stack_b_top = main->stack_b_top->up;
-        main->stack_b_end->down = NULL;
-        main->stack_b_top->up = NULL;
-    }
-    write(1, rra_rrb_rrr, 3);
-    write(1, "\n", 1);
+    (*top)->up = *end;
+    (*end)->down = *top;
+    *end = (*end)->up;
+    *top = (*top)->up;
+    (*end)->down = NULL;
+    (*top)->up = NULL;
 }
