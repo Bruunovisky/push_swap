@@ -35,23 +35,41 @@ typedef struct s_main
     long    *list;
 }   t_main;
 
+int     find_group(t_main *main, long value, int direction);
+
+int     best_rotate(t_main *main, int min, int max);
+
+int     list_search(t_main *main, long value, int direction);
+
+int     stack_progress(t_main *main, t_stack *top, t_stack *end);
+
 void	*ft_calloc(size_t nmemb, size_t size);
 
-void	creat_stack(t_main *main, int argc, char **argv, int *i);
+void	creat_stack(t_main *main, int argc, char **argv);
+
+void	define_groups(t_main *main);
 
 void    error_free_exit(t_main *main);
+
+void    free_main(t_main *main);
 
 void    push_a(t_main *main);
 
 void    push_b(t_main *main);
 
+void    pushes(t_main *main);
+
 void    sort(t_main *main);
 
 void    swap(t_main *main, t_stack **top, t_stack **end, char *sa_sb_ss);
+
+void    swapses(t_main *main, t_stack *top_a);
 
 void    reverse_rotate(t_main *main, t_stack **top, t_stack **end, \
 char *rra_rrb_rrr);
 
 void    rotate(t_main *main, t_stack **top, t_stack **end, char *ra_rb_rr);
+
+void    rotations(t_main *main);
 
 #endif

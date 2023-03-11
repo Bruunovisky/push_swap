@@ -1,13 +1,6 @@
 # include "push_swap.h"
 # include <stdio.h>
 
-void	error_free_exit(t_main *main)
-{
-	write(2, ERROR, 6);
-	free(main);
-	exit(EXIT_FAILURE);
-}
-
 void	*ft_calloc(size_t nmemb, size_t size)
 {
 	void	*ptr;
@@ -41,26 +34,39 @@ int list_split(t_main *main, int range, int split)
 	return (range = main->list_len / split);
 }
 
-int main(int argc, char **argv)
+void	define_groups(t_main *main)
 {
-    t_main  *main;
+	if (main->list_len > 5)
+	{
+		main->mid = ((main->value_max + main->value_min) / 2) + 1;
+		main->top = find_group(main, main->mid - 1, 1);
+		main->end = find_group(main, main->mid, -1);
+	}
+	else if (main->list_len <= 5)
+    {
+        main->end = main->value_min;
+        main->mid = main->value_min;
+        main->top = main->value_min;
+    } 
+}
 
-    main = (t_main *)ft_calloc(1, sizeof(t_main));
-    main->list = (long *)ft_calloc(argc - 1, sizeof(long));
+int	main(int argc, char **argv)
+{
+	t_main	*main;
+
+	main = (t_main *)ft_calloc(1, sizeof(t_main));
+	main->list = (long *)ft_calloc(argc - 1, sizeof(long));
 	main->value_max = INT_MIN;
 	main->value_min = INT_MAX;
 	main->list_len = argc - 1;
 	main->stack_len = main->list_len;
-	main->mid = main->list_len / 2;
-	main->range = list_split(main, main->list_len, 0);
-	main->top = (main->list_len / 2) + main->range;
-	main->end = (main->list_len / 2) - main->range - 1;
-    if (argc == 1)
-		error_free_exit(main);
-	if (argc == 2)
-    	return (EXIT_SUCCESS);
-	creat_stack(main, argc, argv, NULL);
-	sort(main);
-	print_stack(main->stack_a_top, main->operations);
-    return (EXIT_SUCCESS);
+	if (argc > 2)
+	{
+		main->range = list_split(main, main->list_len, 0);
+		creat_stack(main, argc, argv);
+		define_groups(main);
+		sort(main);
+	}
+	free_main(main);
+	return (EXIT_SUCCESS);
 }

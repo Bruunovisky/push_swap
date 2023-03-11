@@ -23,55 +23,39 @@ void    new_node(t_main *main, int value)
     }
 }
 
-void    iter_nodes(t_main *main, int value)
+void    verify_duplicate(t_main *main, int value, int index)
 {
-    t_stack *tmp_top;
-    t_stack *tmp_end;
-
-    tmp_top = main->stack_a_top;
-    tmp_end = main->stack_a_end;
-    if (!tmp_top || (tmp_top && tmp_top == tmp_end && tmp_top->value != value))
-        return (new_node(main, value));
-    else if (tmp_top && tmp_end)
+    while(--index > -1)
     {
-        while (tmp_top->value != value && tmp_end->value != value)
-        {
-            if (tmp_top->down == tmp_end || tmp_end->up == tmp_top)
-                return (new_node(main, value));
-            if (tmp_top == tmp_end)
-                return (new_node(main, value));
-            tmp_top = tmp_top->down;
-            tmp_end = tmp_end->up;
-        }
+        if (main->list[index] == value)
+            return(error_free_exit(main));
     }
-    error_free_exit(main);
+    return (new_node(main, value));
 }
 
-void	creat_stack(t_main *main, int argc, char **argv, int *i)
+void	creat_stack(t_main *main, int argc, char **argv)
 {
     int sign;
+    int i[2];
 
-    i = (int *)ft_calloc(2, sizeof(int));
+    i[0] = 0;
 	while (++i[0] < argc)
 	{
         sign = 1;
+        i[1] = 0;
 		while (argv[i[0]][i[1]])
 		{
-            if (i[1] && (argv[i[0]][i[1]] < '0' || argv[i[0]][i[1]] > '9'))
-                error_free_exit(main);
-            else if (argv[i[0]][i[1]] == '-' && ++i[1])
+            if (argv[i[0]][i[1]] == '-' && ++i[1])
                 sign = -sign;
-            else
-            {
-                main->list[i[0] - 1] += (argv[i[0]][i[1]] - 48) * sign;
-                main->list[i[0] - 1] += (argv[i[0]][i[1] + 1] != '\0') * \
-                (main->list[i[0] - 1] * 9);
-                ++i[1];
-            }
+            if (argv[i[0]][i[1]] < '0' || argv[i[0]][i[1]] > '9')
+                error_free_exit(main);
+            main->list[i[0] - 1] += (argv[i[0]][i[1]] - 48) * sign;
+            main->list[i[0] - 1] += (argv[i[0]][i[1] + 1] != '\0') * \
+            (main->list[i[0] - 1] * 9);
+            ++i[1];
 		}
         if (main->list[i[0] - 1] > INT_MAX || main->list[i[0] - 1] < INT_MIN)
             error_free_exit(main);
-        iter_nodes(main, main->list[i[0] - 1]);
-        i[1] = 0;
+        verify_duplicate(main, main->list[i[0] - 1], i[0] - 1);
 	}
 }
